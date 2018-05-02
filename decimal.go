@@ -1,22 +1,18 @@
 package decimal
 
 import (
-	"errors"
-	"strings"
-
-	"github.com/ericlagergren/decimal"
-	"github.com/ericlagergren/decimal/math"
+	"github.com/shopspring/decimal"
 )
 
 type Decimal struct {
-	native decimal.Big
+	native decimal.Decimal
 }
 
-var Zero = New(0, 0)
+var Zero = decimal.Zero
 
-func New(value int64, scale int) Decimal {
+func New(value int64, scale int32) Decimal {
 	return Decimal{
-		*decimal.New(value, scale),
+		decimal.New(value, scale),
 	}
 }
 
@@ -38,7 +34,7 @@ func NewFromInt32(i int32) Decimal {
 
 func NewFromInt64(i int64) Decimal {
 	return Decimal{
-		*decimal.New(i, 0),
+		decimal.New(i, 0),
 	}
 }
 
@@ -59,18 +55,16 @@ func NewFromUint32(i uint32) Decimal {
 }
 
 func NewFromUint64(i uint64) Decimal {
-	d := decimal.New(0, 0)
-	d.SetUint64(i)
-	return Decimal{*d}
+	return Decimal{
+		decimal.New(int64(i), 0),
+	}
 }
 
 func NewFromString(s string) (Decimal, error) {
-	d := decimal.New(0, 0)
-	_, ok := d.SetString(s)
-	if !ok {
-		return Decimal{}, errors.New("Invalid decimal")
-	}
-	return Decimal{*d}, nil
+	d, err := decimal.NewFromString(s)
+	return Decimal{
+		d,
+	}, err
 }
 func NewFromFloat(f float64) Decimal {
 	return NewFromFloat64(f)
@@ -79,10 +73,8 @@ func NewFromFloat32(f float32) Decimal {
 	return NewFromFloat64(float64(f))
 }
 func NewFromFloat64(f float64) Decimal {
-	d := decimal.New(0, 0)
-	d.SetFloat64(f)
 	return Decimal{
-		*d,
+		decimal.NewFromFloat(f),
 	}
 }
 
@@ -91,79 +83,51 @@ func (d Decimal) String() string {
 }
 
 func (d Decimal) ToInt64() int64 {
-	v, _ := d.native.Int64()
-	return v
+	return d.IntPart()
 }
 
-// IntPart is an alias for ToInt64 that supports the old decimal api
 func (d Decimal) IntPart() int64 {
-	return d.ToInt64()
+	return d.native.IntPart()
 }
 
 func (d Decimal) Add(x Decimal) Decimal {
-	tmp := decimal.New(0, 0)
-	tmp.Add(&d.native, &x.native)
-	return Decimal{*tmp}
+	return Decimal{d.native.Add(x.native)}
 }
 
 func (d Decimal) Sub(x Decimal) Decimal {
-	tmp := decimal.New(0, 0)
-	tmp.Sub(&d.native, &x.native)
-	return Decimal{*tmp}
+	return Decimal{d.native.Sub(x.native)}
 }
 
 func (d Decimal) Cmp(x Decimal) int {
-	return d.native.Cmp(&x.native)
+	return d.native.Cmp(x.native)
 }
 func (d Decimal) Equals(x Decimal) bool {
-	return d.Cmp(x) == 0
+	return d.native.Cmp(x.native) == 0
 }
 
 func (d Decimal) Div(x Decimal) Decimal {
-	tmp := decimal.New(0, 0)
-	tmp.Quo(&d.native, &x.native)
-	return Decimal{*tmp}
+	return Decimal{d.native.Div(x.native)}
 }
 
 func (d Decimal) Mul(x Decimal) Decimal {
-	tmp := decimal.New(0, 0)
-	tmp.Mul(&d.native, &x.native)
-	return Decimal{*tmp}
+	return Decimal{d.native.Mul(x.native)}
 }
 
 func (d Decimal) Mod(x Decimal) Decimal {
-	tmp := decimal.New(0, 0)
-	tmp.Rem(&d.native, &x.native)
-	return Decimal{*tmp}
+	return Decimal{d.native.Mod(x.native)}
 }
 
 func (d Decimal) Floor() Decimal {
-	tmp := decimal.New(0, 0)
-	math.Floor(tmp, &d.native)
-	return Decimal{*tmp}
+	return Decimal{d.native.Floor()}
 }
 
 func (d Decimal) Ceil() Decimal {
-	tmp := decimal.New(0, 0)
-	math.Ceil(tmp, &d.native)
-	return Decimal{*tmp}
+	return Decimal{d.native.Ceil()}
 }
 
 func (d Decimal) Round(p int) Decimal {
-	tmp := decimal.New(0, 0)
-	tmp.Copy(&d.native)
-	tmp.Round(p)
-	return Decimal{*tmp}
+	return Decimal{d.native.Round(int32(p))}
 }
 func (d Decimal) Truncate(p int) Decimal {
-	parts := strings.SplitN(d.native.String(), ".", 2)
-	if len(parts) <= 1 {
-		v, _ := NewFromString(parts[0])
-		return v
-	}
-	if p > len(parts[1])-1 {
-		p = len(parts[1])
-	}
-	v, _ := NewFromString(parts[0] + "." + parts[1][:p])
-	return v
+	return Decimal{d.native.Truncate(int32(p))}
 }
