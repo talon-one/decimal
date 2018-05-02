@@ -8,7 +8,7 @@ type Decimal struct {
 	native decimal.Decimal
 }
 
-var Zero = decimal.Zero
+var Zero Decimal = Decimal{decimal.Zero}
 
 func New(value int64, scale int32) Decimal {
 	return Decimal{
