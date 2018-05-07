@@ -2,9 +2,6 @@
 	"ImportPath": "github.com/talon-one/decimal",
 	"GoVersion": "go1.10",
 	"GodepVersion": "v80",
-	"Packages": [
-		"./..."
-	],
 	"Deps": [
 		{
 			"ImportPath": "github.com/davecgh/go-spew/spew",
@@ -12,14 +9,39 @@
 			"Rev": "87df7c60d5820d0f8ae11afede5aa52325c09717"
 		},
 		{
+			"ImportPath": "github.com/ericlagergren/decimal",
+			"Comment": "v3.2-3-gec32c5d",
+			"Rev": "ec32c5de8e6e882554fff15b1106f5e3d2a3baf6"
+		},
+		{
+			"ImportPath": "github.com/ericlagergren/decimal/internal/arith",
+			"Comment": "v3.2-3-gec32c5d",
+			"Rev": "ec32c5de8e6e882554fff15b1106f5e3d2a3baf6"
+		},
+		{
+			"ImportPath": "github.com/ericlagergren/decimal/internal/arith/checked",
+			"Comment": "v3.2-3-gec32c5d",
+			"Rev": "ec32c5de8e6e882554fff15b1106f5e3d2a3baf6"
+		},
+		{
+			"ImportPath": "github.com/ericlagergren/decimal/internal/c",
+			"Comment": "v3.2-3-gec32c5d",
+			"Rev": "ec32c5de8e6e882554fff15b1106f5e3d2a3baf6"
+		},
+		{
+			"ImportPath": "github.com/ericlagergren/decimal/math",
+			"Comment": "v3.2-3-gec32c5d",
+			"Rev": "ec32c5de8e6e882554fff15b1106f5e3d2a3baf6"
+		},
+		{
+			"ImportPath": "github.com/ericlagergren/decimal/misc",
+			"Comment": "v3.2-3-gec32c5d",
+			"Rev": "ec32c5de8e6e882554fff15b1106f5e3d2a3baf6"
+		},
+		{
 			"ImportPath": "github.com/pmezard/go-difflib/difflib",
 			"Comment": "v1.0.0",
 			"Rev": "792786c7400a136282c1664665ae0a8db921c6c2"
-		},
-		{
-			"ImportPath": "github.com/shopspring/decimal",
-			"Comment": "1.0.0-3-ge348249",
-			"Rev": "e3482495ff4cba75613e4177ed79825c890058a9"
 		},
 		{
 			"ImportPath": "github.com/stretchr/testify/assert",
