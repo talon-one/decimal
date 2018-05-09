@@ -28,6 +28,7 @@
 [[constraint]]
   branch = "master"
   name = "github.com/ericlagergren/decimal"
+  source = "github.com/talon-one/decimal-with-js"
 
 [prune]
   go-tests = true

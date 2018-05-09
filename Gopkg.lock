@@ -18,7 +18,8 @@
     "math",
     "misc"
   ]
-  revision = "ec32c5de8e6e882554fff15b1106f5e3d2a3baf6"
+  revision = "be6420824b078f2cfffbf5aff1ff4286070a7a69"
+  source = "github.com/talon-one/decimal-with-js"
 
 [[projects]]
   name = "github.com/pmezard/go-difflib"
@@ -32,11 +33,12 @@
     "assert",
     "require"
   ]
-  revision = "87b1dfb5b2fa649f52695dd9eae19abe404a4308"
+  revision = "12b6f73e6084dad08a7c6e575284b177ecafbc71"
+  version = "v1.2.1"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "891c324fa0d2f8065eeeade1ba2678e2dc298af1407fbd565a9006ffee750cc8"
+  inputs-digest = "d17f0ad9e112b7f0a02c9a7dcd2cbc74fda0f27d8b6c1d5533207ee693457d1b"
   solver-name = "gps-cdcl"
   solver-version = 1
