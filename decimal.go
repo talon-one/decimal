@@ -99,6 +99,11 @@ func (d Decimal) ToInt64() int64 {
 	return v
 }
 
+func (d Decimal) ToFloat64() float64 {
+	v, _ := d.native.Float64()
+	return v
+}
+
 // IntPart is an alias for ToInt64 that supports the old decimal api
 func (d Decimal) IntPart() int64 {
 	return d.ToInt64()
