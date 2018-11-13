@@ -18,6 +18,8 @@ func TestUnmarshalJSON(t *testing.T) {
 	var d Decimal
 	require.NoError(t, d.UnmarshalJSON([]byte(`"123.456"`)))
 	require.Equal(t, "123.456", d.String())
+
+	require.EqualError(t, d.UnmarshalJSON([]byte(`"ABC"`)), "Invalid decimal")
 }
 
 func TestMarshalText(t *testing.T) {
