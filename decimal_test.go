@@ -16,7 +16,7 @@ func TestNewFromDecimal(t *testing.T) {
 	d1 := NewFromInt(2)
 	d2 := NewFromDecimal(d1)
 	require.True(t, d1.Equals(d2))
-	d1.native.SetUint64(0)
+	d1.native().SetUint64(0)
 	require.True(t, d1.Equals(d0))
 	require.False(t, d1.Equals(d2))
 }
@@ -97,4 +97,9 @@ func TestNewFromInterface(t *testing.T) {
 
 	_, err := NewFromInterface(&testStruct{"ABC"})
 	require.EqualError(t, err, "Unable to create decimal from value type *decimal.testStruct: Invalid decimal")
+}
+
+func TestNilDecimal(t *testing.T) {
+	var d Decimal
+	require.Equal(t, "0", d.String())
 }
