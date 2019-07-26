@@ -104,8 +104,9 @@ func MustNewFromString(s string) Decimal {
 }
 
 func NewFromDecimal(d Decimal) Decimal {
-	cpy := *d.native()
-	return Decimal{&cpy}
+	cpy := decimal.New(0,0)
+	cpy.Copy(d.nat)
+	return Decimal{cpy}
 }
 
 func NewFromInterface(value interface{}) (Decimal, error) {
