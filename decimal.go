@@ -104,7 +104,10 @@ func MustNewFromString(s string) Decimal {
 }
 
 func NewFromDecimal(d Decimal) Decimal {
-	cpy := decimal.New(0,0)
+	if d.nat == nil {
+		return Zero()
+	}
+	cpy := decimal.New(0, 0)
 	cpy.Copy(d.nat)
 	return Decimal{cpy}
 }
