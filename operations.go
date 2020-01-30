@@ -146,6 +146,17 @@ func Round(a Decimal, digits int) Decimal {
 	return d.Round(digits)
 }
 
+// RoundToInt rounds the instance to the nearest integer
+func (dec Decimal) RoundToInt() Decimal {
+	d := dec.native().RoundToInt()
+	return Decimal{d}
+}
+
+func RoundToInt(a Decimal) Decimal {
+	d := NewFromDecimal(a)
+	return d.RoundToInt()
+}
+
 // Truncate truncates the instance to the specific digits
 func (dec Decimal) Truncate(digits int) Decimal {
 	parts := strings.SplitN(dec.native().String(), ".", 2)
