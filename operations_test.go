@@ -198,3 +198,21 @@ func TestTruncate(t *testing.T) {
 	require.Equal(t, "6", decimal.Truncate(data.Decimals[0], 2).String())
 	data.VerifyIntegrity(t)
 }
+
+func TestRoundToInt(t *testing.T) {
+	testData := []struct {
+		input    string
+		expected string
+	}{
+		{input: "6.1", expected: "6"},
+		{input: "1.0", expected: "1"},
+		{input: "10", expected: "10"},
+		{input: "1.5", expected: "2"},
+	}
+	for i, j := range testData {
+		data := setup(j.input)
+		output := decimal.RoundToInt(data.Decimals[0]).String()
+		require.Equal(t, j.expected, output, "At %d: %s ≠ %s", i, j.input, output)
+		data.VerifyIntegrity(t)
+	}
+}
