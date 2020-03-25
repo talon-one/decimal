@@ -84,12 +84,12 @@ func NewFromFloat64(f float64) Decimal {
 }
 
 func NewFromString(s string) (Decimal, error) {
-	if !isDecimal(s) {
-		return Decimal{}, errors.New("Invalid decimal")
-	}
 	d := decimal.New(0, 0)
 	_, ok := d.SetString(s)
 	if !ok {
+		return Decimal{}, errors.New("Invalid decimal")
+	}
+	if d.IsNaN(0) {
 		return Decimal{}, errors.New("Invalid decimal")
 	}
 	return Decimal{d}, nil
