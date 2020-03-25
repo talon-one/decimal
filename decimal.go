@@ -3,7 +3,6 @@ package decimal
 import (
 	"errors"
 	"fmt"
-	"unicode"
 
 	"github.com/ericlagergren/decimal"
 )
@@ -84,12 +83,12 @@ func NewFromFloat64(f float64) Decimal {
 }
 
 func NewFromString(s string) (Decimal, error) {
-	if !isDecimal(s) {
-		return Decimal{}, errors.New("Invalid decimal")
-	}
 	d := decimal.New(0, 0)
 	_, ok := d.SetString(s)
 	if !ok {
+		return Decimal{}, errors.New("Invalid decimal")
+	}
+	if d.IsNaN(0) {
 		return Decimal{}, errors.New("Invalid decimal")
 	}
 	return Decimal{d}, nil
@@ -367,32 +366,4 @@ func (d Decimal) String() string {
 
 func (d Decimal) Bytes() []byte {
 	return []byte(d.String())
-}
-
-func isDecimal(s string) bool {
-	if len(s) <= 0 {
-		return false
-	}
-	runes := []rune(s)
-
-	i := 0
-	if runes[0] == '+' || runes[0] == '-' {
-		i++
-	}
-
-	gotDot := false
-	for ; i < len(runes); i++ {
-		if runes[i] == '.' {
-			if gotDot {
-				return false
-			}
-			gotDot = true
-			continue
-		}
-		if !unicode.IsNumber(runes[i]) {
-			return false
-		}
-	}
-
-	return true
 }
