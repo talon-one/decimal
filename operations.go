@@ -198,9 +198,14 @@ func (dec Decimal) RoundToDigits(digits int) Decimal {
 	prec := dec.native().Precision()
 	scale := dec.native().Scale()
 
-	if scale > prec {
-		digits = digits - 1
-	} else if scale < prec {
+	// if we have more significant digits (prec) than
+	// digits after decimal point (scale) then we want
+	// to have the digits after decimal point
+	// set to (digits - (prec - scale))
+	// for example, 1.23 has prec=3 and scale=2
+	// we want to round it to 2 digits
+	// so we want the new scale to equal (2 - (3 - 2))=1
+	if scale < prec {
 		left := prec - scale
 		digits = digits - left
 	}

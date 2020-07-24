@@ -184,7 +184,7 @@ func TestRound(t *testing.T) {
 	for i, j := range testData {
 		data := setup(j.input)
 		output := decimal.Round(data.Decimals[0], j.digits).String()
-		require.Equal(t, j.expected, output, "At %d: %s ≠ %s", i, j.input, output)
+		require.Equal(t, j.expected, output, "At %d: %s ≠ %s", i, j.expected, output)
 		data.VerifyIntegrity(t)
 	}
 }
@@ -273,7 +273,7 @@ func TestQuantize(t *testing.T) {
 	for i, j := range testData {
 		data := setup(j.input)
 		output := decimal.Quantize(data.Decimals[0], j.digits).String()
-		require.Equal(t, j.expected, output, "At %d: %s ≠ %s", i, j.input, output)
+		require.Equal(t, j.expected, output, "At %d: %s ≠ %s", i, j.expected, output)
 		data.VerifyIntegrity(t)
 	}
 }
@@ -289,22 +289,28 @@ func TestRoundToDigits(t *testing.T) {
 		{input: "1.0", digits: 3, expected: "1.00"},
 		{input: "10", digits: -1, expected: "10"},
 		{input: "1.56", digits: 1, expected: "2"},
-		{input: "6E-2", digits: 2, expected: "0.1"},
-		{input: "6E-2", digits: 1, expected: "0"},
+		{input: "6E-2", digits: 2, expected: "0.06"},
+		{input: "6E-2", digits: 1, expected: "0.1"},
 		{input: "0.00001", digits: 1, expected: "0"},
+		{input: "0.00001", digits: 5, expected: "0.00001"},
 		{input: "123.44", digits: 1, expected: "123"},
 		{input: "123.5", digits: 1, expected: "124"},
 		{input: "6.56", digits: 2, expected: "6.6"},
 		{input: "6.5", digits: 2, expected: "6.5"},
 		{input: "123", digits: 2, expected: "123"},
-		{input: "6.2E-3", digits: 4, expected: "0.006"},
-		{input: "6.2E-3", digits: 6, expected: "0.00620"},
-		{input: "6.2E-3", digits: 3, expected: "0.01"},
+		{input: "6.2E-3", digits: 5, expected: "0.00620"},
+		{input: "6.2E-3", digits: 4, expected: "0.0062"},
+		{input: "6.2E-3", digits: 3, expected: "0.006"},
+		{input: "6.2E-3", digits: 2, expected: "0.01"},
+		{input: "6.2E-3", digits: 1, expected: "0"},
+		{input: "0.1", digits: 3, expected: "0.100"},
+		{input: "0.1", digits: 2, expected: "0.10"},
+		{input: "0.1", digits: 1, expected: "0.1"},
 	}
 	for i, j := range testData {
 		data := setup(j.input)
 		output := decimal.RoundToDigits(data.Decimals[0], j.digits).String()
-		require.Equal(t, j.expected, output, "At %d: %s ≠ %s", i, j.input, output)
+		require.Equal(t, j.expected, output, "At %d: %s ≠ %s", i, j.expected, output)
 		data.VerifyIntegrity(t)
 	}
 }
