@@ -172,13 +172,21 @@ func TestCeil(t *testing.T) {
 }
 
 func TestRound(t *testing.T) {
-	data := setup("6.56")
-	require.Equal(t, "6.6", decimal.Round(data.Decimals[0], 2).String())
-	data.VerifyIntegrity(t)
-
-	require.Equal(t, "6.6", data.Decimals[0].Round(2).String())
-	data.StringRepresentations[0] = "6.6"
-	data.VerifyIntegrity(t)
+	testData := []struct {
+		input    string
+		digits   int
+		expected string
+	}{
+		{input: "6.56", digits: 2, expected: "6.6"},
+		{input: "6.6", digits: 2, expected: "6.6"},
+		{input: "-5.684341886E-14", digits: 10, expected: "-0.00000000000005684341886"},
+	}
+	for i, j := range testData {
+		data := setup(j.input)
+		output := decimal.Round(data.Decimals[0], j.digits).String()
+		require.Equal(t, j.expected, output, "At %d: %s ≠ %s", i, j.input, output)
+		data.VerifyIntegrity(t)
+	}
 }
 
 func TestTruncate(t *testing.T) {
@@ -260,6 +268,7 @@ func TestQuantize(t *testing.T) {
 		{input: "6E-2", digits: 1, expected: "0.1"},
 		{input: "0.00001", digits: 1, expected: "0"},
 		{input: "123.44", digits: 1, expected: "123.4"},
+		{input: "-5.684341886E-14", digits: 10, expected: "0"},
 	}
 	for i, j := range testData {
 		data := setup(j.input)
