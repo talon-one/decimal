@@ -7,6 +7,8 @@ import (
 	"github.com/ericlagergren/decimal"
 )
 
+var zero Decimal = Zero()
+
 type Decimal struct {
 	nat *decimal.Big
 }
@@ -358,12 +360,17 @@ func (d Decimal) MustFloat64() float64 {
 }
 
 func (d Decimal) String() string {
-	if d.native() == nil {
+	if d.native() == nil || d.Equals(zero) {
 		return "0"
 	}
-	return d.native().String()
+	return fmt.Sprintf("%f", d)
 }
 
 func (d Decimal) Bytes() []byte {
 	return []byte(d.String())
+}
+
+// Format implements the fmt.Formatter interface.
+func (d Decimal) Format(s fmt.State, c rune) {
+	d.native().Format(s, c)
 }

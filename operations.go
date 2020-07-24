@@ -159,7 +159,7 @@ func RoundToInt(a Decimal) Decimal {
 
 // Truncate truncates the instance to the specific digits
 func (dec Decimal) Truncate(digits int) Decimal {
-	parts := strings.SplitN(dec.native().String(), ".", 2)
+	parts := strings.SplitN(dec.String(), ".", 2)
 	if len(parts) <= 1 {
 		v, _ := NewFromString(parts[0])
 		dec.native().Copy(v.native())
@@ -178,4 +178,54 @@ func (dec Decimal) Truncate(digits int) Decimal {
 func Truncate(a Decimal, digits int) Decimal {
 	d := NewFromDecimal(a)
 	return d.Truncate(digits)
+}
+
+// Quantize sets dec to the number equal in value and sign to dec with the scale, digits.
+func (dec Decimal) Quantize(digits int) Decimal {
+	dec.native().Quantize(digits)
+	return Decimal{dec.native()}
+}
+
+// Quantize sets a to the number equal in value and sign to a with the scale, digits.
+// a will not be modified.
+func Quantize(a Decimal, digits int) Decimal {
+	d := NewFromDecimal(a)
+	return d.Quantize(digits)
+}
+
+// RoundToDigits rounds a to make it have as many digits if possible.
+func (dec Decimal) RoundToDigits(digits int) Decimal {
+	prec := dec.native().Precision()
+	scale := dec.native().Scale()
+
+	if scale > prec {
+		digits = digits - 1
+	} else if scale < prec {
+		left := prec - scale
+		digits = digits - left
+	}
+
+	if digits < 0 {
+		digits = 0
+	}
+
+	dec.native().Quantize(digits)
+	return Decimal{dec.native()}
+}
+
+// RoundToDigits rounds a to make it have as many digits if possible.
+// a will not be modified.
+func RoundToDigits(a Decimal, digits int) Decimal {
+	d := NewFromDecimal(a)
+	return d.RoundToDigits(digits)
+}
+
+// Precision returns precision of dec.
+func (dec Decimal) Precision() int {
+	return dec.native().Precision()
+}
+
+// Scale returns scale of dec.
+func (dec Decimal) Scale() int {
+	return dec.native().Scale()
 }
