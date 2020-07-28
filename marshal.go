@@ -2,7 +2,7 @@ package decimal
 
 import "bytes"
 
-// UnmarshalText implements the encoding.TextMarshaler interface for serialization
+// MarshalText implements the encoding.TextMarshaler interface for serialization
 func (d Decimal) MarshalText() ([]byte, error) {
 	return []byte(d.String()), nil
 }
@@ -22,7 +22,7 @@ func (d Decimal) MarshalJSON() ([]byte, error) {
 	return d.MarshalText()
 }
 
-// UnmarshalText implements the json.Unmarshaler interface for deserialization
+// UnmarshalJSON implements the json.Unmarshaler interface for deserialization
 func (d *Decimal) UnmarshalJSON(buf []byte) error {
 	return d.UnmarshalText(bytes.Trim(bytes.TrimSpace(buf), `"`))
 }

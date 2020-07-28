@@ -172,13 +172,21 @@ func TestCeil(t *testing.T) {
 }
 
 func TestRound(t *testing.T) {
-	data := setup("6.56")
-	require.Equal(t, "6.6", decimal.Round(data.Decimals[0], 2).String())
-	data.VerifyIntegrity(t)
-
-	require.Equal(t, "6.6", data.Decimals[0].Round(2).String())
-	data.StringRepresentations[0] = "6.6"
-	data.VerifyIntegrity(t)
+	testData := []struct {
+		input    string
+		digits   int
+		expected string
+	}{
+		{input: "6.56", digits: 2, expected: "6.6"},
+		{input: "6.6", digits: 2, expected: "6.6"},
+		{input: "-5.684341886E-14", digits: 10, expected: "-0.00000000000005684341886"},
+	}
+	for i, j := range testData {
+		data := setup(j.input)
+		output := decimal.Round(data.Decimals[0], j.digits).String()
+		require.Equal(t, j.expected, output, "At %d: %s ≠ %s", i, j.expected, output)
+		data.VerifyIntegrity(t)
+	}
 }
 
 func TestTruncate(t *testing.T) {
@@ -213,6 +221,96 @@ func TestRoundToInt(t *testing.T) {
 		data := setup(j.input)
 		output := decimal.RoundToInt(data.Decimals[0]).String()
 		require.Equal(t, j.expected, output, "At %d: %s ≠ %s", i, j.input, output)
+		data.VerifyIntegrity(t)
+	}
+}
+
+func TestPrecisionAndScale(t *testing.T) {
+	testData := []struct {
+		input     string
+		precision int
+		scale     int
+	}{
+		{input: "6.1", precision: 2, scale: 1},
+		{input: "1.0", precision: 2, scale: 1},
+		{input: "10", precision: 2, scale: 0},
+		{input: "1.5", precision: 2, scale: 1},
+		{input: "0.1", precision: 1, scale: 1},
+		{input: "1E-10", precision: 1, scale: 10},
+		{input: "1.0123456789E10", precision: 11, scale: 0},
+		{input: "1.0123456789E9", precision: 11, scale: 1},
+		{input: "01.0123456789E9", precision: 11, scale: 1},
+		{input: "01.012345678900E9", precision: 13, scale: 3},
+		{input: "0.00001", precision: 1, scale: 5},
+		{input: "123.45", precision: 5, scale: 2},
+	}
+	for i, j := range testData {
+		data := setup(j.input)
+		precision := data.Decimals[0].Precision()
+		scale := data.Decimals[0].Scale()
+		require.Equal(t, j.precision, precision, "Wrong precision at %d: %d ≠ %d for input %s", i, j.precision, precision, j.input)
+		require.Equal(t, j.scale, scale, "Wrong scale at %d: %d ≠ %d for input %s", i, j.scale, scale, j.input)
+		data.VerifyIntegrity(t)
+	}
+}
+
+func TestQuantize(t *testing.T) {
+	testData := []struct {
+		input    string
+		digits   int
+		expected string
+	}{
+		{input: "6.1", digits: 0, expected: "6"},
+		{input: "1.0", digits: 2, expected: "1.00"},
+		{input: "10", digits: -1, expected: "10"},
+		{input: "1.56", digits: 1, expected: "1.6"},
+		{input: "6E-2", digits: 2, expected: "0.06"},
+		{input: "6E-2", digits: 1, expected: "0.1"},
+		{input: "0.00001", digits: 1, expected: "0"},
+		{input: "123.44", digits: 1, expected: "123.4"},
+		{input: "-5.684341886E-14", digits: 10, expected: "0"},
+	}
+	for i, j := range testData {
+		data := setup(j.input)
+		output := decimal.Quantize(data.Decimals[0], j.digits).String()
+		require.Equal(t, j.expected, output, "At %d: %s ≠ %s", i, j.expected, output)
+		data.VerifyIntegrity(t)
+	}
+}
+
+func TestRoundToDigits(t *testing.T) {
+	testData := []struct {
+		input    string
+		digits   int
+		expected string
+	}{
+		{input: "6.1", digits: 0, expected: "6"},
+		{input: "1.0", digits: 2, expected: "1.0"},
+		{input: "1.0", digits: 3, expected: "1.00"},
+		{input: "10", digits: -1, expected: "10"},
+		{input: "1.56", digits: 1, expected: "2"},
+		{input: "6E-2", digits: 2, expected: "0.06"},
+		{input: "6E-2", digits: 1, expected: "0.1"},
+		{input: "0.00001", digits: 1, expected: "0"},
+		{input: "0.00001", digits: 5, expected: "0.00001"},
+		{input: "123.44", digits: 1, expected: "123"},
+		{input: "123.5", digits: 1, expected: "124"},
+		{input: "6.56", digits: 2, expected: "6.6"},
+		{input: "6.5", digits: 2, expected: "6.5"},
+		{input: "123", digits: 2, expected: "123"},
+		{input: "6.2E-3", digits: 5, expected: "0.00620"},
+		{input: "6.2E-3", digits: 4, expected: "0.0062"},
+		{input: "6.2E-3", digits: 3, expected: "0.006"},
+		{input: "6.2E-3", digits: 2, expected: "0.01"},
+		{input: "6.2E-3", digits: 1, expected: "0"},
+		{input: "0.1", digits: 3, expected: "0.100"},
+		{input: "0.1", digits: 2, expected: "0.10"},
+		{input: "0.1", digits: 1, expected: "0.1"},
+	}
+	for i, j := range testData {
+		data := setup(j.input)
+		output := decimal.RoundToDigits(data.Decimals[0], j.digits).String()
+		require.Equal(t, j.expected, output, "At %d: %s ≠ %s", i, j.expected, output)
 		data.VerifyIntegrity(t)
 	}
 }
