@@ -1,10 +1,16 @@
 package decimal
 
 import (
+	gomath "math"
 	"strings"
 
 	"github.com/ericlagergren/decimal/math"
 )
+
+// Smallest positive number approaching zero in Golang
+// It is a very small nonzero number representin needed
+// as threshold denominator so we don't divide by zero in AlmostEqual
+var epsilon = NewFromFloat64(gomath.Nextafter(1, 2) - 1)
 
 // Cmp compares n to the decimal instance
 func (dec Decimal) Cmp(n Decimal) int {
@@ -233,4 +239,53 @@ func (dec Decimal) Precision() int {
 // Scale returns scale of dec.
 func (dec Decimal) Scale() int {
 	return dec.native().Scale()
+}
+
+// Abs returns absolute value of a
+func Abs(a Decimal) Decimal {
+	d := NewFromDecimal(a)
+	return d.Abs()
+}
+
+// Abs returns absolute value of dec
+func (dec Decimal) Abs() Decimal {
+	dec.native().Abs(dec.native())
+	return Decimal{dec.native()}
+}
+
+// Min returns the smallest of a and b
+func Min(a, b Decimal) Decimal {
+	if a.Cmp(b) <= 0 {
+		return Decimal{a.native()}
+	}
+	return Decimal{b.native()}
+}
+
+// Min returns the largest of a and b
+func Max(a, b Decimal) Decimal {
+	if a.Cmp(b) >= 0 {
+		return Decimal{a.native()}
+	}
+	return Decimal{b.native()}
+}
+
+// AlmostEquals checks if n almost equal to dec within a relative tolerance
+// Relative tolerance is the ratio of the difference between the two values over the smallest of them
+func (dec Decimal) AlmostEquals(n, tolerance Decimal) bool {
+	// check if the 2 numbers are exactly equal first
+	if dec.Equals(n) {
+		return true
+	}
+
+	min := Min(dec, n)
+	diff := Abs(Sub(dec, n))
+	if Abs(min).Equals(Zero()) {
+		return diff.Cmp(tolerance) < 0
+	}
+	return Div(diff, Max(epsilon, min)).Cmp(tolerance) < 0
+}
+
+// AlmostEquals checks if a almost equal to b within a relative tolerance
+func AlmostEquals(a, b, tolerance Decimal) bool {
+	return a.AlmostEquals(b, tolerance)
 }
