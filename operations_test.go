@@ -314,3 +314,30 @@ func TestRoundToDigits(t *testing.T) {
 		data.VerifyIntegrity(t)
 	}
 }
+
+func TestAlmostEquals(t *testing.T) {
+	testData := []struct {
+		a         string
+		b         string
+		tolerance string
+		equals    bool
+	}{
+		{a: "0", b: "0", tolerance: "0", equals: true},
+		{a: "0.00000001", b: "0.00000002", tolerance: "0.0000001", equals: false},
+		{a: "0", b: "10", tolerance: "0", equals: false},
+		{a: "10", b: "0", tolerance: "0", equals: false},
+		{a: "10000", b: "10001", tolerance: "0.0002", equals: true},
+		{a: "10000", b: "10001", tolerance: "0.0001", equals: false},
+		{a: "6.1", b: "6.1", tolerance: "0", equals: true},
+		{a: "6.1", b: "6.0999999999", tolerance: "0", equals: false},
+		{a: "6.1", b: "6.0999999999", tolerance: "0.0000000001", equals: true},
+		{a: "6.1", b: "6.0999999999", tolerance: "0.00000000001", equals: false},
+		{a: "537.99", b: "537.990000000000009094947017729282379150390625", tolerance: "0.0000001", equals: true},
+	}
+	for i, j := range testData {
+		data := setup(j.a, j.b, j.tolerance)
+		output := decimal.AlmostEquals(data.Decimals[0], data.Decimals[1], data.Decimals[2])
+		require.Equal(t, j.equals, output, "At %d: equality with tolerance %s is not as expected for %s and %s", i, j.tolerance, j.a, j.b)
+		data.VerifyIntegrity(t)
+	}
+}
