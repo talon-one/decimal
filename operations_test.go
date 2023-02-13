@@ -189,6 +189,26 @@ func TestRound(t *testing.T) {
 	}
 }
 
+func TestRoundDown(t *testing.T) {
+	testData := []struct {
+		input    string
+		digits   int
+		expected string
+	}{
+		{input: "6.56", digits: 2, expected: "6.5"},
+		{input: "6.34", digits: 2, expected: "6.3"},
+		{input: "6.6", digits: 2, expected: "6.6"},
+		{input: "6.6", digits: 1, expected: "6"},
+		{input: "-5.684341886E-14", digits: 10, expected: "-0.00000000000005684341886"},
+	}
+	for i, j := range testData {
+		data := setup(j.input)
+		output := decimal.RoundDown(data.Decimals[0], j.digits).String()
+		require.Equal(t, j.expected, output, "At %d: %s ≠ %s", i, j.expected, output)
+		data.VerifyIntegrity(t)
+	}
+}
+
 func TestTruncate(t *testing.T) {
 	data := setup("6.556")
 	require.Equal(t, "6.55", decimal.Truncate(data.Decimals[0], 2).String())
