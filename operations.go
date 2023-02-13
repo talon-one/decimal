@@ -4,6 +4,7 @@ import (
 	gomath "math"
 	"strings"
 
+	"github.com/ericlagergren/decimal"
 	"github.com/ericlagergren/decimal/math"
 )
 
@@ -150,6 +151,22 @@ func (dec Decimal) Round(digits int) Decimal {
 func Round(a Decimal, digits int) Decimal {
 	d := NewFromDecimal(a)
 	return d.Round(digits)
+}
+
+// RoundDown rounds the instance down to the specific digits
+func (dec Decimal) RoundDown(digits int) Decimal {
+	roundingMode := dec.nat.Context.RoundingMode
+	dec.nat.Context.RoundingMode = decimal.ToZero
+	dec.native().Round(digits)
+	dec.nat.Context.RoundingMode = roundingMode
+	return Decimal{dec.native()}
+}
+
+// RoundDown rounds d down to the specific digits and returns it as a new instance
+// d will not be modified
+func RoundDown(a Decimal, digits int) Decimal {
+	d := NewFromDecimal(a)
+	return d.RoundDown(digits)
 }
 
 // RoundToInt rounds the instance to the nearest integer
