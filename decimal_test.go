@@ -103,3 +103,13 @@ func TestNilDecimal(t *testing.T) {
 	var d Decimal
 	require.Equal(t, "0", d.String())
 }
+
+func TestIsNan(t *testing.T) {
+	inf, err := NewFromString("Inf")
+	if err != nil {
+		t.Fail()
+	}
+
+	require.True(t, inf.Mul(NewFromInt(0)).IsNaN())
+	require.False(t, NewFromInt(1).IsNaN())
+}

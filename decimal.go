@@ -374,3 +374,7 @@ func (d Decimal) Bytes() []byte {
 func (d Decimal) Format(s fmt.State, c rune) {
 	d.native().Format(s, c)
 }
+
+func (d Decimal) IsNaN() bool {
+	return d.native().IsNaN(1)
+}
