@@ -21,7 +21,7 @@ Creating a Decimal:
 import "github.com/talon-one/decimal"
 
 // Create a new decimal with a value and scale
-d := decimal.New(12345, -3) // Represents 12.345
+d := decimal.New(12345, -3) // Represents 12345000
 
 // Create a decimal from an integer
 d := decimal.NewFromInt(42) // Represents 42
