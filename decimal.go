@@ -374,3 +374,13 @@ func (d Decimal) Bytes() []byte {
 func (d Decimal) Format(s fmt.State, c rune) {
 	d.native().Format(s, c)
 }
+
+// IsNaN is a method that wraps IsNaN method of the Big type. Big type method expects an integer argument called quiet. Here's a breakdown of the input values and what they mean:
+// - quiet > 0: The function will return true if the Big value x is a quiet NaN.
+// - quiet < 0: The function will return true if the Big value x is a signaling NaN.
+// - quiet == 0: The function will return true if the Big value x is either a quiet or signaling NaN.
+// We are passing 0 as the argument to the IsNaN method, which means that we are checking if the Big value x is either a quiet or signaling NaN.
+// For more information, see https://stackoverflow.com/questions/18118408/what-is-the-difference-between-quiet-nan-and-signaling-nan
+func (d Decimal) IsNaN() bool {
+	return d.native().IsNaN(0)
+}
