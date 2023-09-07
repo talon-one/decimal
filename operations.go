@@ -253,6 +253,11 @@ func (dec Decimal) Precision() int {
 	return dec.native().Precision()
 }
 
+func (dec Decimal) Compact() *uint64 {
+    compact, _ := decimal.Raw(dec.native())
+    return compact
+}
+
 // Scale returns scale of dec.
 func (dec Decimal) Scale() int {
 	return dec.native().Scale()
