@@ -253,6 +253,7 @@ func (dec Decimal) Precision() int {
 	return dec.native().Precision()
 }
 
+// Compact returns the raw "value" of dec.
 func (dec Decimal) Compact() *uint64 {
     compact, _ := decimal.Raw(dec.native())
     return compact
