@@ -3,7 +3,9 @@ package decimal_test
 import (
 	"testing"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
 	"github.com/talon-one/decimal"
 )
 
@@ -289,11 +291,17 @@ func TestQuantize(t *testing.T) {
 		{input: "0.00001", digits: 1, expected: "0"},
 		{input: "123.44", digits: 1, expected: "123.4"},
 		{input: "-5.684341886E-14", digits: 10, expected: "0"},
+		{input: "1234567.01234567891", digits: 10, expected: "1234567.0123456789"},
+		{input: "1234567.3", digits: 10, expected: "1234567.3000000000"},
+		{input: "12345678901234567890.0123456789012345678901", digits: 10, expected: "12345678901234567890.0123456789"},
+		{input: "12345678901234567890.0123456789012345678901", digits: -2, expected: "12345678901234567900"},
+		{input: "1234567.3", digits: -1, expected: "1234570"},
+		{input: "1234567.3", digits: -2, expected: "1234600"},
 	}
 	for i, j := range testData {
 		data := setup(j.input)
 		output := decimal.Quantize(data.Decimals[0], j.digits).String()
-		require.Equal(t, j.expected, output, "At %d: %s ≠ %s", i, j.expected, output)
+		assert.Equal(t, j.expected, output, "At %d: %s ≠ %s", i, j.expected, output)
 		data.VerifyIntegrity(t)
 	}
 }
