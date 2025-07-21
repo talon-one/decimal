@@ -32,7 +32,7 @@ d := decimal.New(12345, -3) // Represents 12345000
 d := decimal.NewFromInt(42) // Represents 42
 ```
 
-⚠️ Immutability is not supported— changes to a value will affect all its copies.
+⚠️ Immutability is not supported — changes to a value will affect all its copies.
 If an independent copy is required, use `NewFromDecimal()` to create a new value.
 
 ```go
@@ -42,9 +42,9 @@ d3 := decimal.NewFromDecimal(d1)
 
 d1.Sub(decimal.NewFromInt(1))
 
-d1.String() // 99
-d2.String() // 99
-d3.String() // 100
+d1.String() // 99 (changed)
+d2.String() // 99 (affected)
+d3.String() // 100 (independent, not affected)
 ```
 
 ## Credits
