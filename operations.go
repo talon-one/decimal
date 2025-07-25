@@ -208,6 +208,9 @@ func (dec Decimal) Quantize(digits int) Decimal {
 	n := dec.native()
 	requiredPrecision := n.Precision() - n.Scale() + digits
 	if requiredPrecision > decimal.DefaultPrecision && requiredPrecision > n.Context.Precision {
+		// The quantized result requires larger precision than the current number.
+		// Adjusts value's Context.Precision to match the precision required
+		// to represent the quantized result.
 		n.Context.Precision = requiredPrecision
 	}
 
