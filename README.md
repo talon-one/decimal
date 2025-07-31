@@ -9,14 +9,19 @@ The `decimal` package provides an arbitrary-precision floating-point decimal imp
 - Utility functions to serialize and deserialize decimal values.
 
 ## Installation
-To install the ‍‍`decimal` package, run the following command:
+
+To install the `decimal` package, run the following command:
+
 ```bash
 go get github.com/talon-one/decimal
 ```
+
 ## Usage
+
 Here's how you can use the decimal package:
 
 Creating a Decimal:
+
 ```go
 import "github.com/talon-one/decimal"
 
@@ -27,5 +32,21 @@ d := decimal.New(12345, -3) // Represents 12345000
 d := decimal.NewFromInt(42) // Represents 42
 ```
 
+⚠️ Immutability is not supported — changes to a value will affect all its copies.
+If an independent copy is required, use `NewFromDecimal()` to create a new value.
+
+```go
+d1 := decimal.NewFromInt(100)
+d2 := d1
+d3 := decimal.NewFromDecimal(d1)
+
+d1.Sub(decimal.NewFromInt(1))
+
+d1.String() // 99 (changed)
+d2.String() // 99 (affected)
+d3.String() // 100 (independent, not affected)
+```
+
 ## Credits
-Thanks to @ericlagergren/decimal for the underlying decimal representation.
+
+Thanks to [ericlagergren/decimal](https://github.com/ericlagergren/decimal) for the underlying decimal representation.

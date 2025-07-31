@@ -205,8 +205,16 @@ func Truncate(a Decimal, digits int) Decimal {
 
 // Quantize sets dec to the number equal in value and sign to dec with the scale, digits.
 func (dec Decimal) Quantize(digits int) Decimal {
-	dec.native().Quantize(digits)
-	return Decimal{dec.native()}
+	n := dec.native()
+	requiredPrecision := n.Precision() - n.Scale() + digits
+	if requiredPrecision > decimal.DefaultPrecision && requiredPrecision > n.Context.Precision {
+		// The quantized result requires larger precision than the current number.
+		// Adjusts value's Context.Precision to match the precision required
+		// to represent the quantized result.
+		n.Context.Precision = requiredPrecision
+	}
+
+	return Decimal{n.Quantize(digits)}
 }
 
 // Quantize sets a to the number equal in value and sign to a with the scale, digits.

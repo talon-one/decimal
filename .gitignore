@@ -1,0 +1,14 @@
+# IDE settings
+.idea/
+.vscode/
+
+# emacs temporary files
+\#*\#
+
+# vim temporary files
+*.swo
+*.swp
+*~
+
+# other
+.DS_store
